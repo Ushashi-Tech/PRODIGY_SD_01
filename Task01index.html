@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Temperature Converter</title>
+    <style>
+        :root {
+            --primary-color: #3498db;
+            --secondary-color: #2ecc71;
+            --background-color: #f5f7fa;
+            --text-color: #333;
+            --card-bg: #fff;
+            --border-color: #ddd;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-color);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            transition: background-color 0.5s;
+        }
+
+        .container {
+            max-width: 800px;
+            width: 100%;
+            background-color: var(--card-bg);
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 30px;
+            transition: all 0.5s;
+        }
+
+        h1 {
+            text-align: center;
+            color: var(--primary-color);
+            margin-bottom: 30px;
+            font-size: 2.5rem;
+        }
+
+        .converter-section {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        label {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        input[type="number"] {
+            flex: 1;
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        input[type="number"]:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        select {
+            padding: 12px 15px;
+            border: 2px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: white;
+            cursor: pointer;
+            transition: border-color 0.3s;
+        }
+
+        select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .results {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+
+        .result-card {
+            background-color: var(--card-bg);
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+            transition: all 0.3s;
+            border: 1px solid var(--border-color);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .result-value {
+            font-size: 2.5rem;
+            font-weight: bold;
+            margin: 10px 0;
+            color: var(--primary-color);
+        }
+
+        .result-label {
+            font-size: 1.2rem;
+            color: var(--text-color);
+            opacity: 0.8;
+        }
+
+        .reference-section {
+            margin-top: 40px;
+            background-color: rgba(46, 204, 113, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 5px solid var(--secondary-color);
+        }
+
+        .reference-title {
+            font-weight: 600;
+            color: var(--secondary-color);
+            margin-bottom: 15px;
+            font-size: 1.2rem;
+        }
+
+        .reference-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+        }
+
+        .reference-item {
+            background-color: white;
+            padding: 10px;
+            border-radius: 8px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .reference-temp {
+            font-weight: bold;
+            color: var(--secondary-color);
+        }
+
+        .reference-desc {
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .temperature-indicator {
+            height: 10px;
+            width: 100%;
+            background: linear-gradient(to right, #00b4d8, #48cae4, #90e0ef, #ade8f4, #caf0f8, #ffffff, #ffd166, #ff9e00, #ff6d00, #ef476f, #d00000);
+            border-radius: 5px;
+            margin: 20px 0;
+            position: relative;
+        }
+
+        .temperature-marker {
+            position: absolute;
+            top: -15px;
+            width: 2px;
+            height: 25px;
+            background-color: black;
+            transform: translateX(-50%);
+        }
+
+        .cold {
+            --primary-color: #00b4d8;
+            --secondary-color: #48cae4;
+            --background-color: #f0f8ff;
+            --card-bg: #ffffff;
+        }
+
+        .cool {
+            --primary-color: #48cae4;
+            --secondary-color: #90e0ef;
+            --background-color: #f5fcff;
+            --card-bg: #ffffff;
+        }
+
+        .mild {
+            --primary-color: #2ecc71;
+            --secondary-color: #48c78e;
+            --background-color: #f5fbf7;
+            --card-bg: #ffffff;
+        }
+
+        .warm {
+            --primary-color: #ffb347;
+            --secondary-color: #ff9e00;
+            --background-color: #fff9f0;
+            --card-bg: #ffffff;
+        }
+
+        .hot {
+            --primary-color: #ff6d00;
+            --secondary-color: #ef476f;
+            --background-color: #fff0f0;
+            --card-bg: #ffffff;
+        }
+
+        .very-hot {
+            --primary-color: #d00000;
+            --secondary-color: #9d0208;
+            --background-color: #ffebee;
+            --card-bg: #ffffff;
+        }
+
+        .extreme-cold {
+            --primary-color: #03045e;
+            --secondary-color: #023e8a;
+            --background-color: #e6f2ff;
+            --card-bg: #ffffff;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+            
+            .results {
+                grid-template-columns: 1fr;
+            }
+            
+            .input-container {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🌡️ Temperature Converter</h1>
+        
+        <div class="converter-section">
+            <div class="input-group">
+                <label for="temperature">Enter Temperature:</label>
+                <div class="input-container">
+                    <input type="number" id="temperature" placeholder="e.g., 25" step="0.01">
+                    <select id="unit">
+                        <option value="celsius">°C (Celsius)</option>
+                        <option value="fahrenheit">°F (Fahrenheit)</option>
+                        <option value="kelvin">K (Kelvin)</option>
+                    </select>
+                </div>
+            </div>
+            
+            <div class="temperature-indicator" id="tempIndicator">
+                <div class="temperature-marker" id="tempMarker"></div>
+            </div>
+            
+            <div class="results" id="results">
+                <div class="result-card">
+                    <div class="result-label">Celsius</div>
+                    <div class="result-value" id="celsiusResult">--</div>
+                    <div class="result-label">°C</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Fahrenheit</div>
+                    <div class="result-value" id="fahrenheitResult">--</div>
+                    <div class="result-label">°F</div>
+                </div>
+                <div class="result-card">
+                    <div class="result-label">Kelvin</div>
+                    <div class="result-value" id="kelvinResult">--</div>
+                    <div class="result-label">K</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="reference-section">
+            <div class="reference-title">🌡️ Temperature Reference Points</div>
+            <div class="reference-items">
+                <div class="reference-item">
+                    <div class="reference-temp">-273.15°C</div>
+                    <div class="reference-desc">Absolute Zero</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-temp">0°C</div>
+                    <div class="reference-desc">Water Freezes</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-temp">20°C</div>
+                    <div class="reference-desc">Room Temperature</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-temp">37°C</div>
+                    <div class="reference-desc">Human Body</div>
+                </div>
+                <div class="reference-item">
+                    <div class="reference-temp">100°C</div>
+                    <div class="reference-desc">Water Boils</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const temperatureInput = document.getElementById('temperature');
+            const unitSelect = document.getElementById('unit');
+            const celsiusResult = document.getElementById('celsiusResult');
+            const fahrenheitResult = document.getElementById('fahrenheitResult');
+            const kelvinResult = document.getElementById('kelvinResult');
+            const tempMarker = document.getElementById('tempMarker');
+            const tempIndicator = document.getElementById('tempIndicator');
+            const body = document.body;
+            
+            // Add event listeners for real-time conversion
+            temperatureInput.addEventListener('input', convertTemperature);
+            unitSelect.addEventListener('change', convertTemperature);
+            
+            // Initial conversion
+            convertTemperature();
+            
+            function convertTemperature() {
+                const inputValue = parseFloat(temperatureInput.value);
+                const unit = unitSelect.value;
+                
+                if (isNaN(inputValue)) {
+                    celsiusResult.textContent = '--';
+                    fahrenheitResult.textContent = '--';
+                    kelvinResult.textContent = '--';
+                    tempMarker.style.left = '50%';
+                    body.className = '';
+                    return;
+                }
+                
+                let celsius, fahrenheit, kelvin;
+                
+                switch (unit) {
+                    case 'celsius':
+                        celsius = inputValue;
+                        fahrenheit = (celsius * 9/5) + 32;
+                        kelvin = celsius + 273.15;
+                        break;
+                    case 'fahrenheit':
+                        fahrenheit = inputValue;
+                        celsius = (fahrenheit - 32) * 5/9;
+                        kelvin = celsius + 273.15;
+                        break;
+                    case 'kelvin':
+                        kelvin = inputValue;
+                        celsius = kelvin - 273.15;
+                        fahrenheit = (celsius * 9/5) + 32;
+                        break;
+                }
+                
+                // Update results with 2 decimal places
+                celsiusResult.textContent = celsius.toFixed(2);
+                fahrenheitResult.textContent = fahrenheit.toFixed(2);
+                kelvinResult.textContent = kelvin.toFixed(2);
+                
+                // Update temperature marker position
+                updateTemperatureMarker(celsius);
+                
+                // Update theme based on temperature
+                updateTheme(celsius);
+            }
+            
+            function updateTemperatureMarker(celsius) {
+                // Scale from -100°C to 500°C for visualization
+                const minTemp = -100;
+                const maxTemp = 500;
+                
+                // Clamp the temperature to our visualization range
+                const clampedTemp = Math.max(minTemp, Math.min(maxTemp, celsius));
+                
+                // Calculate percentage position
+                const percentage = ((clampedTemp - minTemp) / (maxTemp - minTemp)) * 100;
+                
+                // Position the marker
+                tempMarker.style.left = `${percentage}%`;
+            }
+            
+            function updateTheme(celsius) {
+                // Remove all temperature classes
+                body.className = '';
+                
+                // Add appropriate class based on temperature
+                if (celsius < -50) {
+                    body.classList.add('extreme-cold');
+                } else if (celsius < 0) {
+                    body.classList.add('cold');
+                } else if (celsius < 15) {
+                    body.classList.add('cool');
+                } else if (celsius < 25) {
+                    body.classList.add('mild');
+                } else if (celsius < 35) {
+                    body.classList.add('warm');
+                } else if (celsius < 100) {
+                    body.classList.add('hot');
+                } else {
+                    body.classList.add('very-hot');
+                }
+            }
+        });
+    </script>
+</body>
+</html>
